@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\PurchaseRequest;
+use Illuminate\Http\Request;
+use App\Models\Product;
+use App\Models\PurchaseRequestItem;
+use Illuminate\Support\Facades\Auth;
+
+class PurchaseRequestController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    public function index()
+    {
+        $requests = PurchaseRequest::with('user')->get();
+        return view('purchase_requests.index', compact('requests'));
+    }
+
+    public function create()
+    {
+        $products = Product::all();
+        return view('purchase_requests.create', compact('products'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'product_ids' => 'required|array',
+            'quantities' => 'required|array',
+        ]);
+
+        $pr = PurchaseRequest::create([
+            'user_id' => Auth::id(),
+            'status' => 'pending'
+        ]);
+
+        foreach ($request->product_ids as $i => $productId) {
+            PurchaseRequestItem::create([
+                'purchase_request_id' => $pr->id,
+                'product_id' => $productId,
+                'quantity' => $request->quantities[$i]
+            ]);
+        }
+
+        return redirect()->route('purchase-requests.index')->with('success', 'Permintaan berhasil dibuat.');
+    }
+
+    public function approve(PurchaseRequest $purchaseRequest)
+    {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Unauthorized');
+        }
+
+        $purchaseRequest->update(['status' => 'approved']);
+
+        return redirect()->route('purchase-requests.index')->with('success', 'Permintaan disetujui.');
+    }
+
+    public function reject(PurchaseRequest $purchaseRequest)
+    {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Unauthorized');
+        }
+
+        $purchaseRequest->update(['status' => 'rejected']);
+
+        return redirect()->route('purchase-requests.index')->with('success', 'Permintaan ditolak.');
+    }
+}
