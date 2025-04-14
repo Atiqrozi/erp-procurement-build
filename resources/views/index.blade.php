@@ -15,9 +15,11 @@
                     <a href="{{ route('products.index') }}" class="text-blue-600 hover:underline">📦 Manajemen Produk</a> <br>
                     <a href="{{ route('suppliers.index') }}" class="text-blue-600 hover:underline">🏢 Manajemen Supplier</a> <br>
                     <a href="{{ route('purchase-requests.index') }}" class="text-blue-600 hover:underline">📝 Permintaan Pembelian</a>
-                    @if(auth()->user()->role === 'admin') <!-- Cek apakah user adalah admin -->
-                        <a href="{{ route('purchase-orders.index') }}" class="block text-blue-600 hover:underline">📑 Manajemen Purchase Orders</a>
-                    @endif
+                    @auth
+                        @if(auth()->user()->role === 'admin')
+                            <a href="{{ route('purchase-orders.index') }}" class="block text-blue-600 hover:underline">📑 Manajemen Purchase Orders</a>
+                        @endif
+                    @endauth
                 </div>
             </div>
         </div>
