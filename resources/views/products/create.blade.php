@@ -25,12 +25,6 @@
                         <label class="block text-sm font-medium text-gray-700">Satuan</label>
                         <input name="unit" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="pcs, kg, dst">
                     </div>
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Harga</label>
-                        <input name="price" required type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Harga">
-                    </div>
-
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Deskripsi</label>
                         <textarea name="description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="Deskripsi Produk"></textarea>

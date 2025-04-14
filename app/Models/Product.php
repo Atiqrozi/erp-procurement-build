@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $fillable = ['name', 'sku', 'description', 'unit', 'price'];
+    protected $fillable = ['name', 'sku', 'description', 'unit'];
     use HasFactory;
     public function suppliers()
     {

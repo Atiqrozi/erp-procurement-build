@@ -27,10 +27,6 @@
                         <input name="unit" value="{{ $product->unit }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
                     </div>
 
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700">Harga</label>
-                        <input name="price" value="{{ $product->price }}" required type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                    </div>
 
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Deskripsi</label>

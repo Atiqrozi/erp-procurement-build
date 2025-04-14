@@ -28,7 +28,6 @@
                                 <th class="border px-4 py-2">Nama</th>
                                 <th class="border px-4 py-2">SKU</th>
                                 <th class="border px-4 py-2">Unit</th>
-                                <th class="border px-4 py-2">Harga</th>
                                 <th class="border px-4 py-2">Aksi</th>
                             </tr>
                         </thead>
@@ -38,7 +37,6 @@
                                 <td class="border px-4 py-2">{{ $product->name }}</td>
                                 <td class="border px-4 py-2">{{ $product->sku }}</td>
                                 <td class="border px-4 py-2">{{ $product->unit }}</td>
-                                <td class="border px-4 py-2">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
                                 <td class="border px-4 py-2 space-x-2">
                                     <a href="{{ route('products.edit', $product) }}" class="text-blue-600 hover:underline">Edit</a>
                                     <form action="{{ route('products.destroy', $product) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">

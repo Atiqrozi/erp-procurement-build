@@ -27,7 +27,6 @@ class ProductController extends Controller
             'name' => 'required',
             'sku' => 'required|unique:products,sku',
             'unit' => 'required',
-            'price' => 'required|numeric',
         ]);
 
         Product::create($request->all());
@@ -45,7 +44,6 @@ class ProductController extends Controller
             'name' => 'required',
             'sku' => 'required|unique:products,sku,' . $product->id,
             'unit' => 'required',
-            'price' => 'required|numeric',
         ]);
 
         $product->update($request->all());
