@@ -1,25 +1,17 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Selamat Datang
-        </h2>
-    </x-slot>
-
-    <div class="py-6">
+    <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h1 class="text-2xl font-bold mb-4">Selamat Datang di Aplikasi ERP Procurement</h1>
-                <p class="mb-6">Sistem ini digunakan untuk mengelola produk, supplier, dan permintaan pembelian.</p>
-
-                <div class="space-y-2">
-                    <a href="{{ route('products.index') }}" class="text-blue-600 hover:underline">📦 Manajemen Produk</a> <br>
-                    <a href="{{ route('suppliers.index') }}" class="text-blue-600 hover:underline">🏢 Manajemen Supplier</a> <br>
-                    <a href="{{ route('purchase-requests.index') }}" class="text-blue-600 hover:underline">📝 Permintaan Pembelian</a>
-                    @auth
-                        @if(auth()->user()->role === 'admin')
-                            <a href="{{ route('purchase-orders.index') }}" class="block text-blue-600 hover:underline">📑 Manajemen Purchase Orders</a>
-                        @endif
-                    @endauth
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 bg-white border-b border-gray-200">
+                    <h1 class="text-2xl font-bold mb-6 text-center">Pilih Divisi</h1>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        @foreach($divisions as $division)
+                            <a href="{{ route('divisions.show', $division) }}" 
+                               class="block bg-gray-100 hover:bg-gray-200 text-center py-6 rounded-lg shadow-md">
+                                <span class="text-lg font-semibold text-gray-800">{{ $division->name }}</span>
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
             </div>
         </div>

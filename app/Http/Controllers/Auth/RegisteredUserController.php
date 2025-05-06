@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Models\Division;
 
 class RegisteredUserController extends Controller
 {
@@ -40,6 +41,8 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'division_id' => $request->division_id,
+            'role' => "user",
         ]);
 
         event(new Registered($user));
@@ -47,5 +50,11 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);
+    }
+
+    public function showRegistrationForm()
+    {
+        $divisions = Division::all(); // Ambil semua divisi dari database
+        return view('auth.register', compact('divisions'));
     }
 }

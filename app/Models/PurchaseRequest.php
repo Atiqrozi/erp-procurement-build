@@ -7,11 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class PurchaseRequest extends Model
 {
-    public function user() {
-        return $this->belongsTo(User::class);
+    use HasFactory;
+
+    protected $fillable = ['user_id', 'division_id', 'status'];
+
+    public function division()
+    {
+        return $this->belongsTo(Division::class);
     }
 
-    public function items() {
+    public function items()
+    {
         return $this->hasMany(PurchaseRequestItem::class);
     }
 
@@ -20,7 +26,8 @@ class PurchaseRequest extends Model
         return $this->hasMany(PurchaseOrder::class);
     }
 
-    protected $fillable = ['user_id', 'status'];
-
-    use HasFactory;
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

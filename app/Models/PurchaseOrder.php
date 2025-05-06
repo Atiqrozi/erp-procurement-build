@@ -9,10 +9,15 @@ class PurchaseOrder extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['purchase_request_id', 'user_id', 'status', 'total_amount'];
+    protected $fillable = ['purchase_request_id', 'user_id', 'division_id', 'status', 'total_amount'];
 
     public function purchaseRequest()
     {
         return $this->belongsTo(PurchaseRequest::class);
+    }
+
+    public function division()
+    {
+        return $this->belongsTo(Division::class);
     }
 }

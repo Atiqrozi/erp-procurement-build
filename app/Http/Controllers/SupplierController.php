@@ -13,7 +13,9 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $suppliers = Supplier::all();
+        // Ambil supplier berdasarkan divisi user yang sedang login
+        $suppliers = Supplier::where('division_id', auth()->user()->division_id)->with('products')->get();
+
         return view('suppliers.index', compact('suppliers'));
     }
 
@@ -22,7 +24,7 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        $products = Product::all();
+        $products = Product::where('division_id', auth()->user()->division_id)->get();
         return view('suppliers.create', compact('products'));
     }
 
@@ -42,7 +44,13 @@ class SupplierController extends Controller
         ]);
 
         // Simpan data supplier
-        $supplier = Supplier::create($request->only(['name', 'contact', 'email', 'address']));
+        $supplier = Supplier::create([
+        'name' => $request->name,
+        'contact' => $request->contact,
+        'email' => $request->email,
+        'address' => $request->address,
+        'division_id' => auth()->user()->division_id, // Ambil divisi dari user yang login
+        ]);
 
         // Sinkronisasi produk dan harga
         $products = [];

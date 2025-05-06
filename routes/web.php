@@ -6,6 +6,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseRequestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,9 +17,7 @@ use App\Http\Controllers\PurchaseOrderController;
 */
 
 //  Landing page untuk publik
-Route::get('/', function () {
-    return view('index');
-})->name('home');
+Route::get('/', [DivisionController::class, 'index'])->name('divisions.index');
 
 // Auth routes dari Laravel Breeze (login, register, dll.)
 require __DIR__.'/auth.php';
@@ -28,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', function () {
         return redirect('/');
     })->name('dashboard');
+    Route::get('/divisions/{division}', [DivisionController::class, 'show'])->middleware('auth')->name('divisions.show');
 
     // Profile management
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -51,8 +53,24 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/purchase-orders/{purchaseOrder}/pay', [PurchaseOrderController::class, 'pay'])->name('purchase-orders.pay');
 
     // Approve / Reject hanya untuk admin
-    Route::middleware('role:admin')->group(function () {
-        Route::put('/purchase-requests/{purchase_request}/approve', [PurchaseRequestController::class, 'approve'])->name('purchase-requests.approve');
-        Route::put('/purchase-requests/{purchase_request}/reject', [PurchaseRequestController::class, 'reject'])->name('purchase-requests.reject');
-    });
+    // Route::middleware('role:admin')->group(function () {
+    //     Route::put('/purchase-requests/{purchase_request}/approve', [PurchaseRequestController::class, 'approve'])->name('purchase-requests.approve');
+    //     Route::put('/purchase-requests/{purchase_request}/reject', [PurchaseRequestController::class, 'reject'])->name('purchase-requests.reject');
+    // });
 });
+
+Route::middleware(['auth', 'role:manager'])->group(function () {
+    Route::get('/purchase-orders', [PurchaseOrderController::class, 'index'])->name('purchase-orders.index');
+    Route::put('/purchase-requests/{purchaseRequest}/approve', [PurchaseRequestController::class, 'approve'])->name('purchase-requests.approve');
+    Route::put('/purchase-requests/{purchaseRequest}/reject', [PurchaseRequestController::class, 'reject'])->name('purchase-requests.reject');
+    Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
+    Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create');
+    Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
+    Route::get('/roles/{user}/edit', [RoleController::class, 'edit'])->name('roles.edit');
+    Route::put('/roles/{user}', [RoleController::class, 'update'])->name('roles.update');
+    Route::delete('/roles/{user}', [RoleController::class, 'destroy'])->name('roles.destroy');
+});
+
+
+
+Route::get('register', [RegisteredUserController::class, 'showRegistrationForm'])->name('register');

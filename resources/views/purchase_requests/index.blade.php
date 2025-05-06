@@ -35,7 +35,7 @@
                             <tr class="text-center border-t">
                                 <td class="px-4 py-2 border">{{ $req->id }}</td>
                                 <td class="px-4 py-2 border">{{ $req->user->name }}</td>
-                                <td class="px-4 py-2 border">{{ $req->status }}</td>
+                                <td class="px-4 py-2 border">{{ ucfirst($req->status) }}</td>
                                 <td class="px-4 py-2 border">
                                     @foreach($req->items as $item)
                                         <span class="block">{{ $item->product->name }} ({{ $item->quantity }})</span>
@@ -43,7 +43,7 @@
                                 </td>
 
                                 <td class="px-4 py-2 border">
-                                    @if(auth()->user()->role === 'admin' && $req->status === 'pending')
+                                    @if(auth()->user()->role === 'manager' && auth()->user()->division_id === $req->division_id && $req->status === 'pending')
                                         <form method="POST" action="{{ route('purchase-requests.approve', $req) }}" class="inline">
                                             @csrf
                                             @method('PUT')

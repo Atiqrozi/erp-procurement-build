@@ -12,7 +12,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::where('division_id', auth()->user()->division_id)->get();
+
         return view('products.index', compact('products'));
     }
 
@@ -29,8 +30,15 @@ class ProductController extends Controller
             'unit' => 'required',
         ]);
 
-        Product::create($request->all());
-        return redirect()->route('products.index')->with('success', 'Produk ditambahkan.');
+        Product::create([
+            'name' => $request->name,
+            'sku' => $request->sku,
+            'unit' => $request->unit,
+            'description' => $request->description,
+            'division_id' => auth()->user()->division_id, // Ambil divisi dari user yang login
+        ]);
+
+        return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan.');
     }
 
     public function edit(Product $product)
