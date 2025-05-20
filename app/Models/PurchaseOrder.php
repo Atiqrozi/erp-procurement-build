@@ -20,4 +20,8 @@ class PurchaseOrder extends Model
     {
         return $this->belongsTo(Division::class);
     }
+    public function goodsReceipts()
+    {
+        return $this->hasMany(GoodsReceipt::class);
+    }
 }

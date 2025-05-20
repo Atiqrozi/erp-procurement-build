@@ -9,6 +9,7 @@ use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\GoodsReceiptController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,13 +51,11 @@ Route::middleware(['auth'])->group(function () {
 
     // Route untuk Purchase Orders
     Route::get('/purchase-orders', [PurchaseOrderController::class, 'index'])->name('purchase-orders.index');
-    Route::put('/purchase-orders/{purchaseOrder}/pay', [PurchaseOrderController::class, 'pay'])->name('purchase-orders.pay');
+    Route::put('/purchase-orders/{purchaseOrder}/pay', [PurchaseOrderController::class, 'pay'])
+        ->name('purchase-orders.pay');
 
-    // Approve / Reject hanya untuk admin
-    // Route::middleware('role:admin')->group(function () {
-    //     Route::put('/purchase-requests/{purchase_request}/approve', [PurchaseRequestController::class, 'approve'])->name('purchase-requests.approve');
-    //     Route::put('/purchase-requests/{purchase_request}/reject', [PurchaseRequestController::class, 'reject'])->name('purchase-requests.reject');
-    // });
+    Route::get('/purchase-orders/{purchaseOrder}/goods-receipts/create', [GoodsReceiptController::class, 'create'])->name('goods-receipts.create');
+    Route::post('/purchase-orders/{purchaseOrder}/goods-receipts', [GoodsReceiptController::class, 'store'])->name('goods-receipts.store');
 });
 
 Route::middleware(['auth', 'role:manager'])->group(function () {

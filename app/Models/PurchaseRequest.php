@@ -21,6 +21,11 @@ class PurchaseRequest extends Model
         return $this->hasMany(PurchaseRequestItem::class);
     }
 
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
     public function purchaseOrders()
     {
         return $this->hasMany(PurchaseOrder::class);

@@ -32,21 +32,37 @@ class PurchaseOrderController extends Controller
 
     public function index()
     {
-        $purchaseOrders = PurchaseOrder::where('division_id', auth()->user()->division_id)->get();
+        if (auth()->user()->division_id === 2) {
+            $purchaseOrders = PurchaseOrder::all();
+        } else {
+            // Selain keuangan, hanya lihat PO divisinya sendiri
+            $purchaseOrders = PurchaseOrder::where('division_id', auth()->user()->division_id)->get();
+        }
 
         return view('purchase_orders.index', compact('purchaseOrders'));
     }
 
     public function pay(PurchaseOrder $purchaseOrder)
     {
-        // Pastikan user adalah manager dan berasal dari divisi yang sama dengan PO
-        if (auth()->user()->role !== 'manager' || auth()->user()->division_id !== $purchaseOrder->division_id) {
+        // Hanya user keuangan (division_id 2) yang boleh membayar PO
+        if (auth()->user()->division_id !== 2 ) {
             abort(403, 'Unauthorized');
         }
 
         // Update status PO menjadi 'paid'
         $purchaseOrder->update(['status' => 'paid']);
 
-        return redirect()->route('purchase-orders.index')->with('success', 'Purchase Order berhasil dibayar.');
+        // Ambil PurchaseRequest terkait
+        $purchaseRequest = $purchaseOrder->purchaseRequest; // pastikan ada relasi purchaseRequest di model PurchaseOrder
+
+        // Tambahkan quantity dari setiap item PR ke stok produk
+        foreach ($purchaseRequest->items as $item) {
+            $product = $item->product;
+            if ($product) {
+                $product->increment('stock', $item->quantity);
+            }
+        }
+
+        return redirect()->route('purchase-orders.index')->with('success', 'Purchase Order berhasil dibayar dan stok produk diupdate.');
     }
 }
