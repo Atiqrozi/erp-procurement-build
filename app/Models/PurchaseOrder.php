@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\PurchaseRequest;
 
 class PurchaseOrder extends Model
 {
@@ -23,5 +24,9 @@ class PurchaseOrder extends Model
     public function goodsReceipts()
     {
         return $this->hasMany(GoodsReceipt::class);
+    }
+    public function items()
+    {
+        return $this->hasMany(PurchaseOrderItem::class);
     }
 }

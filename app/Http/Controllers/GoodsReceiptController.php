@@ -16,7 +16,8 @@ class GoodsReceiptController extends Controller
         if ($purchaseOrder->status !== 'paid') {
             return redirect()->back()->with('error', 'PO belum dibayar!');
         }
-        $items = $purchaseOrder->items;
+        // Pastikan relasi items() di PurchaseOrder sudah benar
+        $items = $purchaseOrder->items ?? collect(); // fallback ke koleksi kosong jika null
         return view('goods_receipts.create', compact('purchaseOrder', 'items'));
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseRequest;
 use Illuminate\Http\Request;
+use App\Models\PurchaseOrderItem;
 
 class PurchaseOrderController extends Controller
 {
@@ -13,21 +14,29 @@ class PurchaseOrderController extends Controller
         return view('purchase_orders.create', compact('purchaseRequest'));
     }
 
-    public function store(Request $request, PurchaseRequest $purchaseRequest)
+    public function store(Request $request)
     {
-        $request->validate([
-            'total_amount' => 'required|numeric|min:0',
-        ]);
-
-        PurchaseOrder::create([
-            'purchase_request_id' => $purchaseRequest->id,
+        // Validasi dan proses pembuatan PO
+        $purchaseOrder = PurchaseOrder::create([
+            'purchase_request_id' => $request->purchase_request_id,
             'user_id' => auth()->id(),
-            'division_id' => auth()->user()->division_id, // Ambil divisi dari user yang login
+            'division_id' => auth()->user()->division_id,
             'status' => 'pending',
             'total_amount' => $request->total_amount,
         ]);
 
-        return redirect()->route('purchase-requests.index')->with('success', 'Purchase Order berhasil dibuat.');
+        // Ambil item dari purchase_request_items
+        $purchaseRequest = PurchaseRequest::find($request->purchase_request_id);
+        foreach ($purchaseRequest->items as $item) {
+            PurchaseOrderItem::create([
+                'purchase_order_id' => $purchaseOrder->id,
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+                'price' => $item->price, // pastikan ada kolom price di purchase_request_items
+            ]);
+        }
+
+        return redirect()->route('purchase-orders.index')->with('success', 'Purchase Order berhasil dibuat.');
     }
 
     public function index()
