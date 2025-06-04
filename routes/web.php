@@ -18,7 +18,10 @@ use App\Http\Controllers\GoodsReceiptController;
 */
 
 //  Landing page untuk publik
-Route::get('/', [DivisionController::class, 'index'])->name('divisions.index');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', [DivisionController::class, 'index'])->name('divisions.index');
+});
+
 
 // Auth routes dari Laravel Breeze (login, register, dll.)
 require __DIR__.'/auth.php';

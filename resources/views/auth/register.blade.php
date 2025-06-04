@@ -1,4 +1,12 @@
-<x-guest-layout>
+<div class="flex min-h-screen">
+    <!-- KIRI: Gambar Welcome, hanya muncul di md ke atas -->
+  <div class="hidden md:block md:w-1/2 relative">
+    <img src="{{ asset('images/logo.jpg') }}" alt="Welcome" class="object-cover w-full h-full" />
+  </div>
+
+    <!-- KANAN: Form Register -->
+     <div class="w-full md:w-1/2 flex items-center justify-center bg-white dark:bg-gray-900">
+     <x-guest-layout>
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
@@ -53,3 +61,9 @@
         </div>
     </form>
 </x-guest-layout>
+     </div>
+</div>
+
+
+
+
