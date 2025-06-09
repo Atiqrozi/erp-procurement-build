@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Daftar Supplier
+            Daftar Blacklist Supplier
         </h2>
     </x-slot>
 
@@ -9,9 +9,8 @@
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold">Supplier</h3>
-                    <a href="{{ route('suppliers.create') }}"
-                        class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-blue-700">+ Tambah Supplier</a>
+                    <h3 class="text-lg font-bold">Daftar Blacklist Supplier</h3>
+
                 </div>
 
                 @if(session('success'))
@@ -31,7 +30,7 @@
                                 <th class="px-4 py-2 border">Produk</th>
                                 <th class="px-4 py-2 border">Rating</th>
                                 <th class="px-4 py-2 border">Status</th>
-                                <th class="px-4 py-2 border">Aksi</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -63,60 +62,27 @@
 
                                     {{-- Kolom Status --}}
                                     <td class="px-4 py-2 border space-y-1 text-center">
-                                        @if ($supplier->status === 'pending approval')
-                                            <span class="text-gray-400">Menunggu Persetujuan</span>
-                                        @elseif ($supplier->status === 'approved')
-                                            <span class="text-green-600 font-semibold">Disetujui</span>
-                                        @elseif ($supplier->status === 'blacklist')
-                                            <span class="text-red-600 font-semibold">Blacklist</span>
-                                        @endif
+
 
                                         {{-- Tampilkan tombol untuk manager --}}
                                         @if(auth()->user()->role === 'manager')
                                             <div class="space-x-1 mt-1">
-                                                @if($supplier->status !== 'approved')
-                                                    <form action="{{ route('suppliers.changeStatus', $supplier) }}" method="POST"
-                                                        class="inline">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <input type="hidden" name="status" value="approved">
-                                                        <button type="submit"
-                                                            class="text-green-600 hover:underline">Setujui</button>
-                                                    </form>
-                                                @endif
 
                                                 {{-- Tombol blacklist tetap tampil untuk semua status --}}
                                                 <form action="{{ route('suppliers.changeStatus', $supplier) }}" method="POST"
                                                     class="inline">
                                                     @csrf
                                                     @method('PUT')
-                                                    <input type="hidden" name="status" value="blacklist">
+                                                    <input type="hidden" name="status" value="approved">
                                                     <button type="submit" class="text-red-600 hover:underline"
-                                                        onclick="return confirm('Yakin ingin mem-blacklist supplier ini? Tindakan ini tidak dapat dibatalkan.')">
-                                                        Blacklist
+                                                        onclick="return confirm('Yakin ingin membatalkan blacklist supplier ini? Tindakan ini tidak dapat dibatalkan.')">
+                                                        Batalkan Blacklist
                                                     </button>
                                                 </form>
                                             </div>
                                         @endif
                                     </td>
 
-
-                                    {{-- Kolom Aksi --}}
-                                    <td class="px-4 py-2 border space-x-2">
-                                        @if ($supplier->status === 'approved')
-                                            <a href="{{ route('suppliers.edit', $supplier) }}"
-                                                class="text-blue-600 hover:underline">Edit</a>
-                                            <form action="{{ route('suppliers.destroy', $supplier) }}" method="POST"
-                                                class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:underline"
-                                                    onclick="return confirm('Yakin ingin menghapus supplier ini?')">Hapus</button>
-                                            </form>
-                                        @else
-                                            <span class="text-gray-400">Tidak tersedia</span>
-                                        @endif
-                                    </td>
                                 </tr>
                             @endforeach
 

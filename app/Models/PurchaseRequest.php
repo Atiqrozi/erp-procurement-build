@@ -9,12 +9,7 @@ class PurchaseRequest extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'division_id', 'status'];
-
-    public function division()
-    {
-        return $this->belongsTo(Division::class);
-    }
+    protected $fillable = ['user_id', 'status'];
 
     public function items()
     {

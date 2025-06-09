@@ -16,6 +16,7 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
+        "@prettier/plugin-php": "^0.22.4",
         "alpine": "^0.2.1"
     }
 }

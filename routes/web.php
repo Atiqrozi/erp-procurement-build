@@ -10,6 +10,7 @@ use App\Http\Controllers\DivisionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\GoodsReceiptController;
+use App\Http\Controllers\SupplierRatingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 // Auth routes dari Laravel Breeze (login, register, dll.)
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 // Route yang hanya bisa diakses setelah login
 Route::middleware(['auth'])->group(function () {
@@ -45,6 +46,14 @@ Route::middleware(['auth'])->group(function () {
 
     // Supplier
     Route::resource('/suppliers', SupplierController::class);
+    Route::put('/suppliers/{supplier}/status', [SupplierController::class, 'changeStatus'])->name('suppliers.changeStatus');
+
+
+
+    // Supplier Ratings
+    Route::resource('/supplier_rating', SupplierRatingController::class)
+        ->only(['index', 'create', 'store', 'edit', 'update']);
+
 
     // Purchase Request (PR)
     Route::resource('/purchase-requests', PurchaseRequestController::class);
@@ -71,6 +80,7 @@ Route::middleware(['auth', 'role:manager'])->group(function () {
     Route::get('/roles/{user}/edit', [RoleController::class, 'edit'])->name('roles.edit');
     Route::put('/roles/{user}', [RoleController::class, 'update'])->name('roles.update');
     Route::delete('/roles/{user}', [RoleController::class, 'destroy'])->name('roles.destroy');
+    Route::get('/blacklist', [SupplierController::class, 'blacklist'])->name('blacklist.index');
 });
 
 

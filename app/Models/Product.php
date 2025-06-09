@@ -10,7 +10,7 @@ class Product extends Model
     use HasFactory;
 
     // Pastikan kolom division_id ada di $fillable
-    protected $fillable = ['name', 'sku', 'description', 'unit', 'division_id'];
+    protected $fillable = ['name', 'sku', 'description', 'unit'];
 
     // Relasi ke tabel suppliers
     public function suppliers()
@@ -24,11 +24,5 @@ class Product extends Model
     public function purchaseRequestItems()
     {
         return $this->hasMany(PurchaseRequestItem::class);
-    }
-
-    // Relasi ke tabel divisions
-    public function division()
-    {
-        return $this->belongsTo(Division::class);
     }
 }

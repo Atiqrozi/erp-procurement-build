@@ -12,18 +12,15 @@ class PurchaseRequestController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth'); // Pastikan user sudah login
+        $this->middleware('auth');
     }
 
     /**
-     * Menampilkan daftar permintaan pembelian berdasarkan divisi user yang login.
+     * Menampilkan daftar permintaan pembelian.
      */
     public function index()
     {
-        $requests = PurchaseRequest::with('user', 'items.product') // Eager load relasi untuk menghindari query tambahan
-            ->where('division_id', Auth::user()->division_id) // Filter berdasarkan divisi user
-            ->get();
-
+        $requests = PurchaseRequest::with('user', 'items.product')->get();
         return view('purchase_requests.index', compact('requests'));
     }
 
@@ -32,7 +29,7 @@ class PurchaseRequestController extends Controller
      */
     public function create()
     {
-        $products = Product::where('division_id', auth()->user()->division_id)->get(); // Ambil semua produk
+        $products = Product::all();
         return view('purchase_requests.create', compact('products'));
     }
 
@@ -46,14 +43,11 @@ class PurchaseRequestController extends Controller
             'quantities' => 'required|array',
         ]);
 
-        // Buat permintaan pembelian baru
         $pr = PurchaseRequest::create([
             'user_id' => Auth::id(),
-            'division_id' => Auth::user()->division_id, // Ambil divisi dari user yang login
             'status' => 'pending',
         ]);
 
-        // Simpan item permintaan pembelian
         foreach ($request->product_ids as $i => $productId) {
             PurchaseRequestItem::create([
                 'purchase_request_id' => $pr->id,
@@ -70,12 +64,10 @@ class PurchaseRequestController extends Controller
      */
     public function approve(PurchaseRequest $purchaseRequest)
     {
-        // Validasi: User harus manager dan berada di divisi yang sama
-        if (Auth::user()->role !== 'manager' || Auth::user()->division_id !== $purchaseRequest->division_id) {
+        if (Auth::user()->role !== 'manager') {
             abort(403, 'Unauthorized');
         }
 
-        // Update status menjadi 'approved'
         $purchaseRequest->update(['status' => 'approved']);
 
         return redirect()->route('purchase-requests.index')->with('success', 'Permintaan disetujui.');
@@ -86,12 +78,10 @@ class PurchaseRequestController extends Controller
      */
     public function reject(PurchaseRequest $purchaseRequest)
     {
-        // Validasi: User harus manager dan berada di divisi yang sama
-        if (Auth::user()->role !== 'manager' || Auth::user()->division_id !== $purchaseRequest->division_id) {
+        if (Auth::user()->role !== 'manager') {
             abort(403, 'Unauthorized');
         }
 
-        // Update status menjadi 'rejected'
         $purchaseRequest->update(['status' => 'rejected']);
 
         return redirect()->route('purchase-requests.index')->with('success', 'Permintaan ditolak.');

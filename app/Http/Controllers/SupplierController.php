@@ -8,29 +8,24 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        // Ambil supplier berdasarkan divisi user yang sedang login
-        $suppliers = Supplier::where('division_id', auth()->user()->division_id)->with('products')->get();
-
+        $suppliers = Supplier::with(['products', 'ratings'])->where('status', '!=', 'blacklist')->get();
         return view('suppliers.index', compact('suppliers'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    public function show(Supplier $supplier)
+    {
+        return view('suppliers.show', compact('supplier'));
+    }
+
+
     public function create()
     {
-        $products = Product::where('division_id', auth()->user()->division_id)->get();
+        $products = Product::all();
         return view('suppliers.create', compact('products'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -43,16 +38,14 @@ class SupplierController extends Controller
             'product_prices.*' => 'nullable|numeric|min:0',
         ]);
 
-        // Simpan data supplier
         $supplier = Supplier::create([
-        'name' => $request->name,
-        'contact' => $request->contact,
-        'email' => $request->email,
-        'address' => $request->address,
-        'division_id' => auth()->user()->division_id, // Ambil divisi dari user yang login
+            'name' => $request->name,
+            'contact' => $request->contact,
+            'email' => $request->email,
+            'address' => $request->address,
         ]);
 
-        // Sinkronisasi produk dan harga
+
         $products = [];
         if ($request->has('product_ids')) {
             foreach ($request->product_ids as $productId) {
@@ -66,18 +59,12 @@ class SupplierController extends Controller
         return redirect()->route('suppliers.index')->with('success', 'Supplier berhasil ditambahkan.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Supplier $supplier)
     {
         $products = Product::all();
         return view('suppliers.edit', compact('supplier', 'products'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Supplier $supplier)
     {
         $request->validate([
@@ -90,10 +77,10 @@ class SupplierController extends Controller
             'product_prices.*' => 'nullable|numeric|min:0',
         ]);
 
-        // Update data supplier
-        $supplier->update($request->only(['name', 'contact', 'email', 'address']));
+        $updateData = $request->only(['name', 'contact', 'email', 'address']);
 
-        // Sinkronisasi produk dan harga
+        $supplier->update($updateData);
+
         $products = [];
         if ($request->has('product_ids')) {
             foreach ($request->product_ids as $productId) {
@@ -107,13 +94,36 @@ class SupplierController extends Controller
         return redirect()->route('suppliers.index')->with('success', 'Supplier berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Supplier $supplier)
     {
-        $supplier->products()->detach(); // hapus relasi produk
+        $supplier->products()->detach();
         $supplier->delete();
         return redirect()->route('suppliers.index')->with('success', 'Supplier deleted.');
     }
+
+    // App\Http\Controllers\SupplierController.php
+
+    public function changeStatus(Request $request, Supplier $supplier)
+    {
+        $request->validate([
+            'status' => 'required|in:approved,blacklist',
+        ]);
+
+        $success = $supplier->updateStatus($request->status, auth()->user());
+
+        if ($success) {
+            return redirect()->route('suppliers.index')->with('success', 'Status supplier berhasil diperbarui.');
+        } else {
+            return redirect()->route('suppliers.index')->with('error', 'Anda tidak memiliki izin atau status tidak valid.');
+        }
+    }
+
+
+    public function blacklist()
+    {
+        $suppliers = Supplier::where('status', 'blacklist')->get();
+        return view('blacklist.index', compact('suppliers'));
+    }
+
+
 }

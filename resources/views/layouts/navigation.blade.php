@@ -18,20 +18,20 @@
             <a class="capitalize text-gray-700 dark:text-gray-200">
                 
             @php
-    use App\Models\Division;
-    
+use App\Models\Division;
 
-    $path = request()->path();
-    $displayName = 'Dashboard';
-    $division = null;
 
-    if (Str::startsWith($path, 'divisions/')) {
-        $id = request()->segment(2);
-        $division = Division::find($id);
-        $displayName = $division?->name ?? 'Unknown Division';
-    } elseif ($path !== '/') {
-        $displayName = ucfirst(last(explode('/', $path)));
-    }
+$path = request()->path();
+$displayName = 'Dashboard';
+$division = null;
+
+if (Str::startsWith($path, 'divisions/')) {
+    $id = request()->segment(2);
+    $division = Division::find($id);
+    $displayName = $division?->name ?? 'Unknown Division';
+} elseif ($path !== '/') {
+    $displayName = ucfirst(last(explode('/', $path)));
+}
 @endphp
 
 
@@ -122,24 +122,50 @@
         </div>
 
         <nav class="p-4 space-y-2">
-            <a href="{{ route('dashboard') }}" class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Dashboard</a>
-            <a href="{{ route('products.index') }}" class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Produk</a>
-            <a href="{{ route('suppliers.index') }}" class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Suppliers</a>
-            <a href="{{ route('purchase-requests.index') }}" class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Pembelian</a>
+            <a href="{{ route('dashboard') }}"
+                class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Dashboard</a>
+        
             @auth
-                @if (Auth::user()->role === 'manager')
-                    <a href="{{ route('purchase-orders.index') }}" class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                @if(Auth::user()->division_id === 2)
+                    <a href="{{ route('products.index') }}"
+                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Produk</a>
+                    <a href="{{ route('purchase-requests.index') }}"
+                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Pembelian</a>
+                @endif
+
+                @if(Auth::user()->division_id === 4)
+                    <a href="{{ route('suppliers.index') }}"
+                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Suppliers</a>
+                @endif
+
+                @if(Auth::user()->division_id === 4)
+                    <a href="{{ route('supplier_rating.index') }}"
+                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Rating</a>
+                @endif
+
+                @if(Auth::user()->division_id === 4 && Auth::user()->role === 'manager')
+                    <a href="{{ route('blacklist.index') }}"
+                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        Blacklist
+                    </a>
+                @endif
+
+
+                @if(Auth::user()->division_id === 1 && Auth::user()->role === 'manager')
+                    <a href="{{ route('purchase-orders.index') }}"
+                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         Manajemen Order
                     </a>
                 @endif
-            @endauth
-            @auth
-                @if (Auth::user()->division_id===1 && Auth::user()->role === 'manager')
-                    <a href="{{ route('roles.index') }}" class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+
+                @if(Auth::user()->division_id === 1 && Auth::user()->role === 'manager')
+                    <a href="{{ route('roles.index') }}"
+                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         Role dan Divisi
                     </a>
                 @endif
             @endauth
         </nav>
+
     </aside>
 </div>

@@ -36,6 +36,18 @@
                             class="w-full mt-1 rounded border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ $supplier->address }}</textarea>
                     </div>
                     <div class="mb-4">
+                        <label for="rating" class="block text-sm font-medium text-gray-700">Rating</label>
+                            <select name="rating" id="rating" class="mt-1 block w-full border rounded px-3 py-2">
+                                <option value="">- Pilih Rating -</option>
+                                    @foreach(['sangat baik', 'baik', 'kurang baik', 'tidak baik'] as $value)
+                                        <option value="{{ $value }}" {{ old('rating', $supplier->rating ?? '') == $value ? 'selected' : '' }}>
+                                            {{ ucfirst($value) }}
+                                        </option>
+                                    @endforeach
+                            </select>
+                    </div>
+
+                    <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Produk yang Disuplai</label>
                         <div class="mt-2 grid grid-cols-2 gap-4">
                             @foreach($products as $product)

@@ -12,7 +12,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::where('division_id', auth()->user()->division_id)->get();
+        $products = Product::with('suppliers')->get();
 
         return view('products.index', compact('products'));
     }
@@ -35,7 +35,7 @@ class ProductController extends Controller
             'sku' => $request->sku,
             'unit' => $request->unit,
             'description' => $request->description,
-            'division_id' => auth()->user()->division_id, // Ambil divisi dari user yang login
+            
         ]);
 
         return redirect()->route('products.index')->with('success', 'Produk berhasil ditambahkan.');

@@ -16,23 +16,20 @@ class PurchaseOrderController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi dan proses pembuatan PO
         $purchaseOrder = PurchaseOrder::create([
             'purchase_request_id' => $request->purchase_request_id,
             'user_id' => auth()->id(),
-            'division_id' => auth()->user()->division_id,
             'status' => 'pending',
             'total_amount' => $request->total_amount,
         ]);
 
-        // Ambil item dari purchase_request_items
         $purchaseRequest = PurchaseRequest::find($request->purchase_request_id);
         foreach ($purchaseRequest->items as $item) {
             PurchaseOrderItem::create([
                 'purchase_order_id' => $purchaseOrder->id,
                 'product_id' => $item->product_id,
                 'quantity' => $item->quantity,
-                'price' => $item->price, // pastikan ada kolom price di purchase_request_items
+                'price' => $item->price,
             ]);
         }
 
@@ -41,30 +38,23 @@ class PurchaseOrderController extends Controller
 
     public function index()
     {
-        if (auth()->user()->division_id === 2) {
-            $purchaseOrders = PurchaseOrder::all();
-        } else {
-            // Selain keuangan, hanya lihat PO divisinya sendiri
-            $purchaseOrders = PurchaseOrder::where('division_id', auth()->user()->division_id)->get();
-        }
-
+        $purchaseOrders = PurchaseOrder::all();
         return view('purchase_orders.index', compact('purchaseOrders'));
     }
 
     public function pay(PurchaseOrder $purchaseOrder)
     {
-        // Hanya user keuangan (division_id 2) yang boleh membayar PO
-        if (auth()->user()->division_id !== 2 ) {
+        $user = auth()->user();
+
+        // Validasi sederhana, ubah jika pakai role
+        if ($user->role !== 'keuangan') {
             abort(403, 'Unauthorized');
         }
 
-        // Update status PO menjadi 'paid'
         $purchaseOrder->update(['status' => 'paid']);
 
-        // Ambil PurchaseRequest terkait
-        $purchaseRequest = $purchaseOrder->purchaseRequest; // pastikan ada relasi purchaseRequest di model PurchaseOrder
+        $purchaseRequest = $purchaseOrder->purchaseRequest;
 
-        // Tambahkan quantity dari setiap item PR ke stok produk
         foreach ($purchaseRequest->items as $item) {
             $product = $item->product;
             if ($product) {
