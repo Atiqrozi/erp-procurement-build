@@ -11,6 +11,12 @@ use Illuminate\Http\Request;
 
 class GoodsReceiptController extends Controller
 {
+    public function index()
+    {
+        $goodsReceipts = GoodsReceipt::with('purchaseOrder', 'items.product')->get();
+        return view('goods_receipts.index', compact('goodsReceipts'));
+    }
+
     public function create(PurchaseOrder $purchaseOrder)
     {
         if ($purchaseOrder->status !== 'paid') {

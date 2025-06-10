@@ -124,46 +124,70 @@ if (Str::startsWith($path, 'divisions/')) {
         <nav class="p-4 space-y-2">
             <a href="{{ route('dashboard') }}"
                 class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Dashboard</a>
-        
             @auth
-                @if(Auth::user()->division_id === 2)
+                @if(Auth::user()->division_id === 2 || Auth::user()->division_id === 3)
+
                     <a href="{{ route('products.index') }}"
-                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Produk</a>
-                    <a href="{{ route('purchase-requests.index') }}"
-                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Pembelian</a>
+                    class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Produk</a>
                 @endif
 
-                @if(Auth::user()->division_id === 4)
-                    <a href="{{ route('suppliers.index') }}"
-                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Suppliers</a>
-                @endif
+                    @if(Auth::user()->division_id === 2 || Auth::user()->division_id === 5)
 
-                @if(Auth::user()->division_id === 4)
-                    <a href="{{ route('supplier_rating.index') }}"
-                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Rating</a>
-                @endif
+                        <a href="{{ route('purchase-requests.index') }}"
+                            class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Pembelian</a>
+                    @endif
 
-                @if(Auth::user()->division_id === 4 && Auth::user()->role === 'manager')
-                    <a href="{{ route('blacklist.index') }}"
-                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        Blacklist
-                    </a>
-                @endif
+                    @if(Auth::user()->division_id === 5)
+                        <a href="{{ route('balance.index') }}"
+                            class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Balance</a>
+                            <a href="{{ route('budget_limits.index') }}"
+                                class=" block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100
+                                dark:hover:bg-gray-700">Budget Limit</a>
+                    @endif
+
+                    @if(Auth::user()->division_id === 4)
+                        <a href="{{ route('suppliers.index') }}"
+                            class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Suppliers</a>
+                    @endif
+
+                    @if(Auth::user()->division_id === 4)
+                        <a href="{{ route('supplier_rating.index') }}"
+                            class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Rating</a>
+                    @endif
+
+                    @if(Auth::user()->division_id === 4 && Auth::user()->role === 'manager')
+                        <a href="{{ route('blacklist.index') }}"
+                            class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Blacklist
+                        </a>
+                    @endif
+
+                    @if(Auth::user()->division_id === 3)
+                        <a href="{{ route('goods_receipts.index') }}"
+                            class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Goods Receipt
+                        </a>
+                    @endif
 
 
-                @if(Auth::user()->division_id === 1 && Auth::user()->role === 'manager')
-                    <a href="{{ route('purchase-orders.index') }}"
-                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        Manajemen Order
-                    </a>
-                @endif
+                    @if(Auth::user()->division_id === 1 && Auth::user()->role === 'manager' || Auth::user()->division_id === 2 && Auth::user()->role === 'manager' || Auth::user()->division_id === 3)
+                        <a href="{{ route('purchase-orders.index') }}"
+                            class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Manajemen Order
+                        </a>
+                    @endif
 
-                @if(Auth::user()->division_id === 1 && Auth::user()->role === 'manager')
-                    <a href="{{ route('roles.index') }}"
-                        class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        Role dan Divisi
-                    </a>
-                @endif
+                    @if(Auth::user()->division_id === 1 && Auth::user()->role === 'manager')
+                        <a href="{{ route('roles.index') }}"
+                            class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                            Role dan Divisi
+                        </a>
+                    @endif
+
+                    @if(Auth::user()->role === 'manager')
+                        <a href="{{ route('messages.index') }}"
+                            class="block px-4 py-2 rounded text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Messages</a>
+                    @endif
             @endauth
         </nav>
 
